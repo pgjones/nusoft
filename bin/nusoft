@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+#
+# nusoft
+#
+# Converts commands in actions.
+#
+# Author P G Jones - 2014-08-02 <p.g.jones@qmul.ac.uk> : New file.
+####################################################################################################
+import os
+import logging
+import nusoft.nusoft
+import argparse
+
+if os.path.exists("test.log"):
+    os.remove("test.log")
+logging.basicConfig(filename="test.log", level=logging.DEBUG)
+
+nu = nusoft.nusoft.Nusoft(os.getcwd())
+parser = argparse.ArgumentParser()
+parser.add_argument("command", help="Command for nusoft; [install, update, remove] + package name; [list, search]; [collaborate] + local name + remote url.", nargs="*")
+args = parser.parse_args()
+if args.command[0] == "install":
+    nu.install(args.command[1])
+elif args.command[0] == "update":
+    nu.update(args.command[1])
+elif args.command[0] == "remove":
+    nu.remove(args.command[1])
+elif args.command[0] == "list":
+    nu.list()
+elif args.command[0] == "search":
+    nu.search(args.command[1])
