@@ -4,7 +4,7 @@
 #
 # ROOT packages and versions
 #
-# Author P G Jones - 2014-08-14 <p.g.jones@qmul.ac.uk> : New file.
+# Author P G Jones - 2014-02-14 <p.g.jones@qmul.ac.uk> : New file.
 ####################################################################################################
 import nusoft.package.local as local_package
 import os

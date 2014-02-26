@@ -4,4 +4,4 @@
 
 packages/*
 !packages/nusoft/
-!packages/nusoft/*
+!packages/nusoft/*.py

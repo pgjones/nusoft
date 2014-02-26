@@ -37,6 +37,17 @@ class Standard(system.System):
         exists = os.path.exists(file_path)
         logger.debug("Checking file %s exists == %r" % (file_path, exists))
         return exists
+    def is_library(self, file):
+        """ Check if the *file* is a library
+
+        :param file: to check
+        :return: True if the *file* is a library on this system
+        """
+        file = file.split(".")[0]
+        file_path = self._file_path(file)
+        library = self.exists(file_path + ".a") or self.exists(file_path + ".so") or self.exists(file_path + ".dylib")
+        logger.debug("Checking file %s is a library == %r" % (file_path, library))
+        return library
     def remove(self, file):
         """ Remove the *file* or directory at *file*
 
@@ -150,8 +161,8 @@ class Standard(system.System):
         :type cwd: string
         :param env: optional dictionary of environment
         :type env: dictionary of keys with values, all strings
-        :return: standard output from command
-        :rtype: string
+        :return: tuple, Truth if returncode is 0 and standard output from command
+        :rtype: tuple bool and string
         """
         if cwd is None:
             cwd = self.get_install_path()
@@ -180,6 +191,7 @@ class Standard(system.System):
         
         :param headers: list of header names with extension
         :param flags: list of flags
+        :return: True if compiles
         """
         logger.debug("Testing compilation with headers %r and flags %r" % (headers, flags))
         file_text = ""
@@ -189,7 +201,7 @@ class Standard(system.System):
         file_path = self._file_path("temp.cc")
         with open(file_path, "w") as test_file:
             test_file.write(file_text)
-        output = self.execute("g++", [file_path] + flags)
+        output = self.execute("g++", [file_path] + flags, cwd=self.get_temporary_path())
         self.remove(file_path)
         return output[0]
     

@@ -78,6 +78,13 @@ class System(object):
         :return: True if it exists
         """
         pass
+    def is_library(self, file):
+        """ Check if the *file* is a library
+
+        :param file: to check
+        :return: True if the *file* is a library on this system
+        """
+        pass
     def remove(self, file):
         """ Remove the *file* or directory at *file*
 
@@ -143,8 +150,8 @@ class System(object):
         :type cwd: string
         :param env: optional dictionary of environment
         :type env: dictionary of keys with values, all strings
-        :return: standard output from command
-        :rtype: string
+        :return: tuple, Truth if returncode is 0 and standard output from command
+        :rtype: tuple bool and string
         """
         pass
     def compilation_test(self, headers=None, flags=None):
@@ -152,5 +159,6 @@ class System(object):
         
         :param headers: list of header names with extension
         :param flags: list of flags
+        :return: True if compiles
         """
         pass

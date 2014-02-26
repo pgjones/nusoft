@@ -41,7 +41,9 @@ class TestSystem(unittest.TestCase):
         Download the a small tar and untar.
         """
         
-
+    def test_exists(self):
+        """ Test the system believes files exist"""
+        self.assertTrue(os.path.exists(__file__) == self._system.exists(__file__))
 
 if __name__ == '__main__':
     unittest.main()
