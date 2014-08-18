@@ -38,6 +38,18 @@ class PackageManager(object):
         """
         for package_name in self._packages:
             yield (package_name, self._packages[package_name])
+    def get_package(self, package_name):
+        """ Return the package with a name equal to *package_name*
+
+        :param package_name: name of the package
+        :return: the installed package
+        :rtype: :class:`nusoft.package.Package` instance
+        """
+        try:
+            return self._packages[package_name]
+        except KeyError:
+            logger.warn("Package %s does not exist" % package_name)
+            raise
 ####################################################################################################
     # Functions that act on single packages
     def install_all(self):
@@ -65,7 +77,7 @@ class PackageManager(object):
 
         :param package_name: name of the package of which dependencies should be installed
         """
-        package = self._get_package(package_name)
+        package = self.get_package(package_name)
         self._install_package_dependencies(package)
     def install_package(self, package_name):
         """ Install the package with a name equal to *package_name*
@@ -74,7 +86,7 @@ class PackageManager(object):
         :return: the installed package
         :rtype: :class:`nusoft.package.Package` instance
         """
-        package = self._get_package(package_name)
+        package = self.get_package(package_name)
         return self._install_package(package)
     def update_package(self, package_name):
         """ Update the package with a name equal to *package_name*
@@ -83,7 +95,7 @@ class PackageManager(object):
         :return: the installed package
         :rtype: :class:`nusoft.package.Package` instance
         """
-        package = self._get_package(package_name)
+        package = self.get_package(package_name)
         return self._update_package(package)
     def remove_package(self, package_name, force=False):
         """ Remove the package with a name equal to *package_name*
@@ -93,18 +105,10 @@ class PackageManager(object):
 
         :param package_name: name of the package to remove
         """
-        package = self._get_package(package_name)
+        package = self.get_package(package_name)
         return self._remove_package(package, force)
 ####################################################################################################
     # Internal functions
-    def _get_package(self, package_name):
-        """ Return the package with a name equal to *package_name*
-
-        :param package_name: name of the package
-        :return: the installed package
-        :rtype: :class:`nusoft.package.Package` instance
-        """
-        return self._packages[package_name]
     def _install_package_dependencies(self, package):
         """ Install the dependencies of the package
 
@@ -117,14 +121,15 @@ class PackageManager(object):
             # at least one is installed.
             if isinstance(dependency_name, types.ListType): # Multiple optional dependencies
                 for optional_dependency_name in dependency_name:
-                    optional_dependency = self._get_package(optional_dependency_name)
+                    optional_dependency = self.get_package(optional_dependency_name)
                     if optional_dependency.is_installed(): # Great found one!
                         installed_dependencies[optional_dependency_name] = optional_dependency
                         break
                 else: # No optional dependency is installed, thus install the first
-                    installed_dependencies[dependency[0]] = self.install_package(dependency[0])
+                    dependency = self.get_package(dependency_name[0])
+                    installed_dependencies[dependency_name[0]] = self._install_package(dependency)
             else: # Just a single dependency
-                dependency = self._get_package(dependency_name)
+                dependency = self.get_package(dependency_name)
                 if dependency.is_installed():
                     installed_dependencies[dependency_name] = dependency
                 else: # Must install it

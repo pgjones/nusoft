@@ -63,6 +63,27 @@ class PythonDev(library_package.LibraryPackage):
         """
         super(PythonDev, self).__init__("python-dev", system, repository, config="python-config")
 
+class Uuid(library_package.LibraryPackage):
+    """ The uuid library package."""
+    def __init__(self, system, repository):
+        """ Initialise the uuid library package.
+
+        :param system: class that manages system 
+        :type system: :class:`nusoft.system.System` instance
+        :param repository: local name of the repository the package is from
+        """
+        super(Uuid, self).__init__("uuid", system, repository, libraries=["uuid"], headers=["uuid/uuid.h"])
+
+class OsspUuid(library_package.LibraryPackage):
+    """ The ossp-uuid library package."""
+    def __init__(self, system, repository):
+        """ Initialise the ossp-uuid library package.
+
+        :param system: class that manages system 
+        :type system: :class:`nusoft.system.System` instance
+        :param repository: local name of the repository the package is from
+        """
+        super(OsspUuid, self).__init__("ossp-uuid", system, repository, config="uuid-config")
 
 # The versions of these packages
-versions = [X11, Xpm, Xft, Xext, PythonDev]
+versions = [X11, Xpm, Xft, Xext, PythonDev, Uuid, OsspUuid]

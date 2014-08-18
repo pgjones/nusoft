@@ -8,6 +8,7 @@
 ####################################################################################################
 import os
 import tempfile
+import nusoft.credentials
 import logging
 logger = logging.getLogger(__name__)
 
@@ -16,14 +17,16 @@ class System(object):
 
     :param _install_path: The installation path
     :param _temporary_path: The temporary/cache path
+    :param _credentials: The credentials needed to download.
     """
-    def __init__(self, install_path, temporary_path=None):
+    def __init__(self, install_path, temporary_path=None, token=None):
         """ Initialise the system with an *install_path* and an optional *temporary_path*
 
         :param install_path: Location to install to
         :type install_path: string
         :param temporary_path: Optional path to save files to temporarily
         :type temporary_path: string
+        :param token: Download token key
         """
         self._install_path = install_path
         if temporary_path is not None:
@@ -34,6 +37,7 @@ class System(object):
                 os.makedirs(self._temporary_path)
         logger.info("System initialised, the install path is %s and the temporary path is %s" % 
                     (self._install_path, self._temporary_path))
+        self._credentials = nusoft.credentials.Credentials(token)
 ####################################################################################################
 # Path commands
     def get_repositories_path(self):
@@ -91,19 +95,20 @@ class System(object):
         :param file: to remove
         """
         pass
-    def download(self, url, username=None, password=None, token=None, name=None, retries=0):
+    def set_chmod(self, file, value):
+        """ Set the chmod attributes of *file*
+
+        :param file: to set the chmod attributes of
+        :param value: to set
+        """
+        pass
+    def download(self, url, authenticate=False, name=None, retries=0):
         """ Download the *url* to a file called *name* in the temporary path, if *name* is not set
-        will save to the url filename. User the *username* and *password* if set or the *token*.
-        Retry downloading *retries* number of times
-        
+        will save to the url filename. If *authenticate* is True the credentials are queried and
+        required. Retry downloading *retries* number of times                                                                                                                                                                             
         :param url: of the file to download
         :type url: string
-        :param username: username for the url
-        :type username: string
-        :param password: password for the url
-        :type username: string
-        :param token: token for the url
-        :type token: string
+        :param authenticate: True if authentication is required.
         :param name: optional name to save to in the temporary path
         :type name: string
         :param retries: number of retries
@@ -139,7 +144,7 @@ class System(object):
         """
         pass
     def execute(self, command, args=None, cwd=None, env=None):
-        """ Run a configure *command* in the *cwd* directory with arguments, *args* and optional *env*,
+        """ Run a *command* in the *cwd* directory with arguments, *args* and optional *env*,
         environment.
 
         :param command: optional command to execute

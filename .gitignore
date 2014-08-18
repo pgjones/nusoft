@@ -1,7 +1,3 @@
 *~
 *.pyc
 *.log
-
-packages/*
-!packages/nusoft/
-!packages/nusoft/*.py

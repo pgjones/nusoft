@@ -30,7 +30,7 @@ class Root(local_package.LocalPackage):
         :returns: list of dependency package names
         :rtype: list
         """
-        return ["make", "g++", "gcc", "ld", "python" "X11", "Xpm", "Xft", "Xext", "python-dev"]
+        return ["make", "g++", "gcc", "ld", "python", "x11", "xpm", "xft", "xext", "python-dev"]
     def _download(self):
         """ Download the root tar file."""
         self._system.download("ftp://root.cern.ch/root/" + self._tar_name)
@@ -54,8 +54,9 @@ class Root(local_package.LocalPackage):
         return self._system.exists(os.path.join(self.get_install_path(), "bin/root"))
     
 # The versions of root that can be installed
-versions = [type('root-5.34.15', (Root, object), {"_version" : "root_v5.34.15"}),
-            type('root-5.32.04', (Root, object), {"_version" : "root_v5.32.04"}),
-            type('root-5.30.06', (Root, object), {"_version" : "root_v5.30.06"}),
-            type('root-5.28.00g', (Root, object), {"_version" : "root_v5.28.00g"}),
-            type('root-5.26.00', (Root, object), {"_version" : "root_v5.26.00"})]
+versions = [type('root_v5.34.18', (Root, object), {"_version" : "root_v5.34.18"}),
+            type('root_v5.34.08', (Root, object), {"_version" : "root_v5.34.08"}),
+            type('root_v5.34.02', (Root, object), {"_version" : "root_v5.34.02"}),
+            type('root_v5.32.04', (Root, object), {"_version" : "root_v5.32.04"}),
+            type('root_v5.28.00', (Root, object), {"_version" : "root_v5.28.00h"}),
+            type('root_v5.24.00', (Root, object), {"_version" : "root_v5.24.00"})]

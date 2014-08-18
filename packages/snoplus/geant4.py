@@ -41,7 +41,8 @@ class Geant4(local_package.LocalPackage):
         self._system.untar(self._tar_name, self._source_path, 1)
         if not self._system.exists(self.get_install_path()):
             os.makedirs(self.get_install_path())
-        cmake_opts = ["-DCMAKE_INSTALL_PREFIX=%s" % self.get_install_path(), "-DGEANT4_INSTALL_DATA=ON", self._source_path]
+        cmake_opts = ["-DCMAKE_INSTALL_PREFIX=%s" % self.get_install_path(), 
+                      "-DGEANT4_INSTALL_DATA=ON", self._source_path]
         cmake = os.path.join(self._dependencies["cmake-2.8.12.1"].get_install_path(), "bin/cmake")
         self._system.configure(cmake, cmake_opts, self.get_install_path())
         self._system.execute("make", [], self.get_install_path())
@@ -62,6 +63,6 @@ class Geant4(local_package.LocalPackage):
             self._system.is_library(os.path.join(self.get_install_path(), "lib64/libG4event"))
     
 # The versions of geant4 that can be installed
-versions = [type('Geant41000', (Geant4, object), {"_version" : "geant4.10.00"}),
+versions = [type('Geant41000', (Geant4, object), {"_version" : "geant4.10.00.p01"}),
             type('Geant4962', (Geant4, object), {"_version" : "geant4.9.6.p02"}),
             type('Geant4952', (Geant4, object), {"_version" : "geant4.9.5.p02"})]

@@ -1,30 +1,32 @@
 #!/usr/bin/env python
 #
-# Standard
+# DryRun
 #
-# Standard system implementation.
+# Dry run system implementation, just saves the relevant commands to a file.
 #
-# Author P G Jones - 2014-02-22 <p.g.jones@qmul.ac.uk> : New file.
+# Author P G Jones - 2014-06-18 <p.g.jones@qmul.ac.uk> : New file.
 ####################################################################################################
 import system
-import os
-import shutil
-import tarfile
-import urllib2
-import base64
-import subprocess
 import logging
 logger = logging.getLogger(__name__)
 
-class Standard(system.System):
+class DryRun(system.System):
     """ The standard system implementation"""
-    def __init__(self, install_path):
+    def __init__(self, install_path, file_name=None):
         """ Initialise the system with an *install_path*
 
         :param install_path: Location to install to
         :type install_path: string
+        :param file_name: optional filename to output commands too, defaults to dry_run_date.nusoft
         """
         super(Standard, self).__init__(install_path)
+        if file_name is None:
+            file_name = "dry_run_" + datetime.datetime.now().isoformat() + ".nusoft"
+        self._file = open(file_name, "w")
+        self._file.write("Installing to %s\n" % install_path)
+    def __del__(self):
+        """ Closes the open file. """
+        self._file.close();
 ####################################################################################################
 # Comamnds to alter/create files
     def exists(self, file):
@@ -34,17 +36,19 @@ class Standard(system.System):
         :return: True if it exists
         """
         file_path = self._file_path(file)
-        exists = os.path.exists(file_path)
+        self._file.write("Check %s exists\n" % file_path)
         logger.debug("Checking file %s exists == %r" % (file_path, exists))
-        return exists
+        return False
     def is_library(self, file):
         """ Check if the *file* is a library
 
         :param file: to check
         :return: True if the *file* is a library on this system
         """
+        file = file.split(".")[0]
         file_path = self._file_path(file)
-        library = self.exists(file_path + ".a") or self.exists(file_path + ".so")
+        self._file.write("Check %s is a library\n" % file_path)
+        library = self.exists(file_path + ".a") or self.exists(file_path + ".so") or self.exists(file_path + ".dylib")
         logger.debug("Checking file %s is a library == %r" % (file_path, library))
         return library
     def remove(self, file):
@@ -53,20 +57,8 @@ class Standard(system.System):
         :param file: to remove
         """
         file_path = self._file_path(file)
-        if os.path.isdir(file_path):
-            shutil.rmtree(file_path)
-        elif os.path.isfile(file_path):
-            os.remove(file_path)
+        self._file.write("Remove the file %s\n" % file_path)
         logger.debug("Removing file %s" % file_path)
-    def set_chmod(self, file, value):
-        """ Set the chmod attributes of *file*
-        
-        :param file: to set the chmod attributes of
-        :param value: to set
-        """
-        file_path = self._file_path(file)
-        os.chmod(file_path, value)
-        logger.debug("Setting chmod of %s to %s" % (file_path, value))
     def download(self, url, authenticate=False, name=None, retries=0):
         """ Download the *url* to a file called *name* in the temporary path, if *name* is not set
         will save to the url filename. If *authenticate* is True the credentials are queried and
@@ -83,25 +75,7 @@ class Standard(system.System):
         if name is None:
             name = url.split('/')[-1]
         target_path = self._file_path(name)
-        if self.exists(target_path):
-            return
-        url_request = urllib2.Request(url)
-        if authenticate: # HTTP authentication needed
-            credentials = self._credentials.authenticate()
-            if type(credentials) is tuple:
-                b64string = base64.encodestring('%s:%s' % credentials)
-                url_request.add_header("Authorization", "Basic %s" % b64string)
-            else:
-                url_request.add_header("Authorization", "token %s" % credentials)
-        try:
-            remote_file = urllib2.urlopen(url_request)
-            with open(target_path, 'wb') as local_file:
-                local_file.write(remote_file.read())
-            remote_file.close()
-        except urllib2.URLError, e: # No internet connection
-            logger.exception("Tried to download %s to %s" % (url, target_path))
-            self.remove(target_path)
-            raise
+        self._file.write("Download %s to %s\n" % (url, target_path))
         logger.debug("Downloaded %s to %s" % (url, target_path))
     def untar(self, file, target, strip_depth=0):
         """ Untar the *file* to *target*, the *file* is assumed to be in the temporary directory.
@@ -116,26 +90,7 @@ class Standard(system.System):
         """
         file_path = self._file_path(file)
         target_path = self._file_path(target)
-        if self.exists(target_path):
-            self.remove(target_path)
-        if strip_depth == 0: # Untar directly into target
-            with tarfile.open(file_path) as tar_file:
-                tar_file.extractall(target_path)
-        else: # Must extract to temp target then copy strip directory to real target
-            temp_path = self._file_path("tartemp")
-            if self.exists(temp_path): # Delete it
-                self.remove(temp_path)
-            os.makedirs(temp_path)
-            with tarfile.open(file_path) as tar_file:
-                tar_file.extractall(temp_path)
-            copy_path = temp_path
-            for depth in range(0, strip_depth):
-                sub_folders = os.listdir(copy_path)
-                if 'pax_global_header' in sub_folders:
-                    sub_folders.remove('pax_global_header')
-                copy_path = os.path.join(copy_path, sub_folders[0])
-            shutil.copytree(copy_path, target_path)
-            self.remove(temp_path)
+        self._file.write("Untar %s to %s, strip %i leading folders\n" % (file_path, target_path, strip_depth))
         logger.debug("Untaring file %s to %s, with %i stripped" % (file_path, target_path, strip_depth))
     def configure(self, command='./configure', args=None, cwd=None, env=None):
         """ Run a configure *command* in the *cwd* directory with arguments, *args* and optional *env*, 
@@ -152,20 +107,20 @@ class Standard(system.System):
         :return: standard output from command
         :rtype: string
         """
+        self._file.write("Configure: %s\n" % command)
+        if args is not None:
+            self._file.write("\twith args: %r\n" % args)
+        if cwd is not None:
+            self._file.write("\tin directory: %s\n" % cwd)
+        if env is not None:
+            self._file.write("\tand environment: %r\n" % env)
         logger.debug("Configuring via command %s" % command)
         return self.execute(command, args, cwd, env)
-    def execute_commands(self, commands):
-        
-        file_name = os.path.join(self.get_install_path(), "temp.sh")
-        with open(file_name, "w") as command_file:
-            command_file.write('\n'.join(commands))
-        self.execute("/bin/bash", args=[file_name])
-        self.remove(file_name)
     def execute(self, command, args=None, cwd=None, env=None):
         """ Run a configure *command* in the *cwd* directory with arguments, *args* and optional *env*,
         environment.
 
-        :param command: command to execute or list of commands to execute together
+        :param command: optional command to execute
         :type command: string
         :param args: optional list of arguments
         :type args: list of strings
@@ -186,18 +141,10 @@ class Standard(system.System):
         shell_command = [command]
         if args is not None:
             shell_command.extend(args)
+        self._file.write("Executing %s\n" % ' '.join(shell_command))
+        self._file.write("\twith environment: %r\n" % local_env)
         logger.info("Executing %s" % ' '.join(shell_command))
-        try:
-            process = subprocess.Popen(args=shell_command, env=local_env, cwd=cwd,
-                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        except exceptions.OSError,e:
-            logger.exception("Tried executing %s and failed" % ' '.join(shell_command))
-        output, error = process.communicate()
-        logger.debug("Executing %s, gives \n{\noutput : %s\nerror: %s\n}\n" % (' '.join(shell_command), output, error))
-        # After process has finished
-        if process.returncode != 0:
-            logger.error("Tried executing %s and failed %i" % (' '.join(shell_command), process.returncode))
-        return (process.returncode == 0, output) # Very useful for library checking
+        return (True, "")
     def compilation_test(self, headers=None, flags=None):
         """ Test that a file can be compiled by g++ with the *headers* and linkage *flags*.
         
@@ -205,15 +152,7 @@ class Standard(system.System):
         :param flags: list of flags
         :return: True if compiles
         """
+        self._file.write("Test compilation with headers %r and flags %r" % (headers, flags))
         logger.debug("Testing compilation with headers %r and flags %r" % (headers, flags))
-        file_text = ""
-        for header in headers:
-            file_text += "#include <%s>\n" % header
-        file_text += "int main( int a, char* b[] ) { }"
-        file_path = self._file_path("temp.cc")
-        with open(file_path, "w") as test_file:
-            test_file.write(file_text)
-        output = self.execute("g++", [file_path] + flags, cwd=self.get_temporary_path())
-        self.remove(file_path)
-        return output[0]
+        return ""
     

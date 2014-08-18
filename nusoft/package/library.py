@@ -38,7 +38,7 @@ class LibraryPackage(package.Package):
         self._headers = []
         self._flags = []
         if libraries is not None:
-            self._libraries = libraries
+            self._libraries = ["-l" + library for library in libraries]
         if headers is not None:
             self._headers = headers
         if flags is not None:

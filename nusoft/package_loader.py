@@ -32,21 +32,6 @@ class PackageLoader(object):
             if os.path.isdir(location):
                 logger.info("Found %s in system repositories" % dir)
                 self._repositories[dir] = location
-    def add_repository(self, name, url):
-        """ Adds a new repository to nusoft, this doesn't load the packages.
-        
-        :param name: local name for the repository
-        :param url: git repository url
-        """
-        logger.info("Adding %s with name %s" % (url, name))
-        self._repositories[name] = os.path.join(self._system.get_repositories_path(), name)
-        self._system.execute_command()
-    def update_repository(self, name):
-        """ Updates the repository with the local name.
-        
-        :param name: local name for the repository
-        """
-        pass
     def load(self):
         """ Load the packages from the repositories. """
         for repository in self._repositories:

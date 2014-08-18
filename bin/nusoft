@@ -16,10 +16,17 @@ if os.path.exists("test.log"):
 logging.basicConfig(filename="test.log", level=logging.DEBUG)
 
 nu = nusoft.nusoft.Nusoft(os.getcwd())
-parser = argparse.ArgumentParser()
-parser.add_argument("command", help="Command for nusoft; [install, update, remove] + package name; [list, search]; [collaborate] + local name + remote url.", nargs="*")
+parser = argparse.ArgumentParser(prog='nusoft', description='Package manager for particle physics')
+parser.add_argument("command", help="Command for nusoft; [install, install-dependencies, update, remove, query] + package"
+                    " name; [list, search];", nargs="*")
+parser.add_argument('--version', action='version', version='0.1')
+
+parser.add_argument('--dry', action='store_true', help='Do a dry run')
 args = parser.parse_args()
-if args.command[0] == "install":
+
+if len(args.command) == 0:
+    parser.print_help()
+elif args.command[0] == "install":
     nu.install(args.command[1])
 elif args.command[0] == "update":
     nu.update(args.command[1])
@@ -29,3 +36,5 @@ elif args.command[0] == "list":
     nu.list()
 elif args.command[0] == "search":
     nu.search(args.command[1])
+elif args.command[0] == "query":
+    nu.query(args.command[1])

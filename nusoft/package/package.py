@@ -77,10 +77,10 @@ class Package(object):
         pass
     def install(self):
         """ Function to install the package, raises exception unless implemented."""
-        raise
+        raise Exception("%s from %s cannot be installed by nusoft" % (self._name, self._repository))
     def update(self):
         """ Function to update installed package, raises exception unless implmented."""
-        raise
+        raise Exception("%s from %s cannot be updated by nusoft" % (self._name, self._repository))
     def remove(self):
         """ Function to remove installed package, raises exception unless implmented."""
-        raise
+        raise Exception("%s from %s cannot be removed by nusoft" % (self._name, self._repository))
