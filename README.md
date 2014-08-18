@@ -4,11 +4,11 @@ A package manager for software used in particle physics experiments.
 
 Installation
 ------------
-Todo
+Clone this repository and source the env.(c)sh file.
 
 Requirements
 ------------
-* Python 2.6+
+* Python 2.7
 
 Usage
 -----
