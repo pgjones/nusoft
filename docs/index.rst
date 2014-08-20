@@ -6,7 +6,10 @@
 Welcome to nusoft's documentation!
 ==================================
 
+.. include:: README.rst 
+
 Contents:
+=========
 
 .. toctree::
    :maxdepth: 4
