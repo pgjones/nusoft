@@ -61,10 +61,14 @@ class RatRelease(local_package.LocalPackage):
         env_file.append_python_path("$ROOTSYS/lib")
         env_file.append_library_path("$ROOTSYS/lib")
         env_file.add_source(os.path.join(self._dependencies[self._geant4].get_install_path(), "bin"), "geant4")
-        env_file.append_path(os.path.join(self._dependencies[self._curl].get_install_path(), "bin"))
-        env_file.append_library_path(os.path.join(self._dependencies[self._curl].get_install_path(), "lib"))
-        env_file.add_environment("BZIPROOT", self._dependencies[self._bzip].get_install_path())
-        env_file.append_library_path(os.path.join(self._dependencies[self._bzip].get_install_path(), "lib"))
+
+        if self._dependencies[self._curl].get_install_path() is not None: # If CURL is installed locally
+            env_file.append_path(os.path.join(self._dependencies[self._curl].get_install_path(), "bin"))
+            env_file.append_library_path(os.path.join(self._dependencies[self._curl].get_install_path(), "lib"))
+        if self._dependencies[self._bzip].get_install_path() is not None: # If BZIP is installed locally
+            env_file.add_environment("BZIPROOT", self._dependencies[self._bzip].get_install_path())
+            env_file.append_library_path(os.path.join(self._dependencies[self._bzip].get_install_path(), "lib"))
+
         env_file.add_post_source(self.get_install_path(), "env")
         env_file.write(self._system.get_install_path(), "env_" + self._version)
     def _remove(self):
@@ -78,11 +82,18 @@ class RatRelease(local_package.LocalPackage):
         sys = os.uname()[0]
         return self._system.exists(os.path.join(self.get_install_path(), "bin/rat_%s" % sys)) \
             and self._system.exists(os.path.join(self.get_install_path(), "bin/root")) \
-            and self._system.exists(os.path.join(self.get_install_path(), "lib/librat_%s" % sys)) \
-            and self._system.exists(os.path.join(self.get_install_path(), "lib/libRATEvent_%s" % sys)) 
+            and self._system.is_library(os.path.join(self.get_install_path(), "lib/librat_%s" % sys)) \
+            and self._system.is_library(os.path.join(self.get_install_path(), "lib/libRATEvent_%s" % sys)) 
     
 # The versions of RatRelease that can be installed
-versions = [type('Rat450', (RatRelease, object), {"_version" : "rat-4.5.0", 
+versions = [type('Rat460', (RatRelease, object), {"_version" : "rat-4.6.0", 
+                                                  "_tar_name" : "4.6.0.tar.gz",
+                                                  "_root" : "root_v5.34.18",
+                                                  "_geant4" : "geant4.9.6.p02",
+                                                  "_scons" : "scons-2.1.0",
+                                                  "_curl" : "curl-7.26.0",
+                                                  "_bzip" : "bzip2-1.0.6"}),
+            type('Rat450', (RatRelease, object), {"_version" : "rat-4.5.0", 
                                                   "_tar_name" : "4.5.0.tar.gz",
                                                   "_root" : "root_v5.34.18",
                                                   "_geant4" : "geant4.9.6.p02",

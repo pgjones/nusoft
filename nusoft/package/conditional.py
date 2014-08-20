@@ -34,7 +34,6 @@ class ConditionalPackage(package.Package):
         :param config: config command
         """
         super(ConditionalPackage, self).__init__(name, system, repository)
-        self._install_path = os.path.join(system.get_install_path(), self._name)
         self._updated = False
         self._libraries = []
         self._headers = []
@@ -64,6 +63,9 @@ class ConditionalPackage(package.Package):
 
         if self._system.compilation_test(self._headers, self._libraries + self._flags):
             self._installed = True
+            
+        # Not on system so set a local install path
+        self._install_path = os.path.join(self._system.get_install_path(), self._name)
         # Now check the local install folder
         if not self._installed:
             if self._is_installed():
