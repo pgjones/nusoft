@@ -52,7 +52,7 @@ class SCons(local_package.LocalPackage):
         """
         return self._system.exists(os.path.join(self.get_install_path(), "script/scons"))
     
-# The versions of root that can be installed
+# The versions of scons that can be installed
 versions = [type('scons-2.1.0', (SCons, object), {"_version" : "scons-2.1.0",
                                                   "_number" : "2.1.0"}),
             type('scons-1.2.0', (SCons, object), {"_version" : "scons-1.2.0",
