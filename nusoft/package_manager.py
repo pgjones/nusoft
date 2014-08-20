@@ -176,14 +176,14 @@ class PackageManager(object):
         :param package: package to remove
         """
         if not package.is_installed():
-            raise
+            raise Exception("Package is not installed.")
         if force:
             package.remove()
         else:
             if len(self._package_dependents(package)) == 0:
                 package.remove()
             else:
-                raise
+                raise Exception("Package has dependents.")
     def _package_dependents(self, package):
         """ Yield the name of any packages that are dependent on *package*
 
