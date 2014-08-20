@@ -160,7 +160,7 @@ class PackageManager(object):
         """
         if not package.is_installed():
             raise
-        dependencies = self._install_dependencies(package)
+        dependencies = self._install_package_dependencies(package)
         package.set_dependencies(dependencies)
         package.update()
         package.check_state()
@@ -198,9 +198,9 @@ class PackageManager(object):
             # If test package has this package as a dependency then update the test package
             for dependency in test_package.get_dependencies():
                 if isinstance(dependency, types.ListType): # deal with optional dependencies
-                    if package_name in dependency:
+                    if package.get_name() in dependency:
                         dependents.append(test_package)
-                elif dependency == package_name:
+                elif dependency == package.get_name():
                     dependents.append(test_package)
         return dependents
 

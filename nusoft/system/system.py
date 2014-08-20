@@ -115,6 +115,23 @@ class System(object):
         :type retries: int
         """
         pass
+    def git_clone(self, url, target):
+        """ Git clone the repository at *url* to the *target* path.
+
+        :param url: of the git repository
+        :type url: string
+        :param target: target location, absolute path
+        :type target: string
+        """
+        pass
+    def git_update(self, target):
+        """ Update a git repository at *target* path by fetching and merging origin/master.
+        This only occurs if the repository has no changes.
+
+        :param target: target location, absolute path
+        :type target: string
+        """
+        pass
     def untar(self, file, target, strip_depth=0):
         """ Untar the *file* to *target*, the *file* is assumed to be in the temporary directory.
         Optionally strip the *strip_depth* of leading directories in the tar *file*.

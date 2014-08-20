@@ -103,6 +103,37 @@ class Standard(system.System):
             self.remove(target_path)
             raise
         logger.debug("Downloaded %s to %s" % (url, target_path))
+    def git_clone(self, url, target):
+        """ Git clone the repository at *url* to the *target* path.
+
+        :param url: of the git repository
+        :type url: string
+        :param target: target location, absolute path
+        :type target: string
+        """
+        target_path = self._file_path(target)
+        self.execute("git", ["clone", url, target_path])
+        logger.debug("Git cloned %s to %s" % (url, target_path))
+    def git_update(self, target):
+        """ Update a git repository at *target* path by fetching and merging origin/master.
+        This only occurs if the repository has no changes.
+
+        :param target: target location, absolute path
+        :type target: string
+        """
+        target_path = self._file_path(target)
+        # Check if the target has any changes, and drop out if so
+        result = self.execute("git", ["status", "--porcelain"], cwd=target_path)
+        if result[1] is None or result[1] == "" or result[1] == "\n":
+            # Fetch the origin, checkout master merge origin master and return
+            self.execute("git", ["fetch", "origin"], cwd=target_path)
+            self.execute("git", ["checkout", "origin"], cwd=target_path)
+            self.execute("git", ["merge", "origin/master"], cwd=target_path)
+            self.execute("git", ["checkout", "-"], cwd=target_path)
+            logger.debug("Git updated %s" % (target_path))
+            return True
+        else:
+            return False # cannot update the repo
     def untar(self, file, target, strip_depth=0):
         """ Untar the *file* to *target*, the *file* is assumed to be in the temporary directory.
         Optionally strip the *strip_depth* of leading directories in the tar *file*.
