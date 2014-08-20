@@ -182,9 +182,34 @@ class Standard(system.System):
         :type env: dictionary of keys with values, all strings
         :return: standard output from command
         :rtype: string
+        :raises Exception: if the configure fails
         """
         logger.debug("Configuring via command %s" % command)
-        return self.execute(command, args, cwd, env)
+        result = self.execute(command, args, cwd, env)
+        if not result[0]:
+            raise Exception("Configuration failed")
+        return result
+    def make(self, command='make', args=None, cwd=None, env=None):
+        """ Run a make *command* in the *cwd* directory with arguments, *args* and optional *env*, 
+        environment.
+        
+        :param command: optional command to execute
+        :type command: string
+        :param args: optional list of arguments
+        :type args: list of strings
+        :param cwd: optional path to execute the command in
+        :type cwd: string
+        :param env: optional dictionary of environment 
+        :type env: dictionary of keys with values, all strings
+        :return: standard output from command
+        :rtype: string
+        :raises Exception: if the make fails
+        """
+        logger.debug("Make via command %s" % command)
+        result = self.execute(command, args, cwd, env)
+        if not result[0]:
+            raise Exception("Make failed")
+        return result
     def execute_commands(self, commands):
         
         file_name = os.path.join(self.get_install_path(), "temp.sh")

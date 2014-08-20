@@ -39,7 +39,7 @@ class Root(local_package.LocalPackage):
         self._system.untar(self._tar_name, self.get_install_path(), 1)
         args = ['--enable-minuit2', '--enable-roofit',  '--enable-python', '--enable-mathmore']
         self._system.configure(args=args, cwd=self.get_install_path())
-        self._system.execute('make', cwd=self.get_install_path())
+        self._system.make(cwd=self.get_install_path())
     def _update(self):
         """ Nothing to do here..."""
         pass

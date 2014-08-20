@@ -30,9 +30,10 @@ class Cmake(local_package.LocalPackage):
     def _install(self):
         """ Untar the tar file and install it to the install path."""
         self._system.untar(self._tar_name, self.get_install_path(), 1)
-        self._system.execute("./bootstrap", ["--prefix=%s" % self.get_install_path()], cwd=self.get_install_path())
-        self._system.execute("make", cwd=self.get_install_path())
-        self._system.execute("make", ["install"], cwd=self.get_install_path())
+        self._system.configure(command="./bootstrap", args=["--prefix=%s" % self.get_install_path()], 
+                               cwd=self.get_install_path())
+        self._system.make(cwd=self.get_install_path())
+        self._system.make(args=["install"], cwd=self.get_install_path())
     def _update(self):
         """ Nothing to do here..."""
         pass

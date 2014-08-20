@@ -22,7 +22,8 @@ class Bzip2(conditional_package.ConditionalPackage):
         :type system: :class:`nusoft.system.System` instance
         :param repository: local name of the repository the package is from
         """
-        super(Bzip2, self).__init__(self._version, system, repository, libraries=["bz2"], headers=["bzlib.h"])
+        super(Bzip2, self).__init__(self._version, system, repository, libraries=["bz2"], 
+                                    headers=["bzlib.h"])
         self._tar_name = self._version + ".tar.gz"
     def get_dependencies(self):
         """ Return a list of dependency names
@@ -37,9 +38,9 @@ class Bzip2(conditional_package.ConditionalPackage):
     def _install(self):
         """ Untar the tar file to the install path."""
         self._system.untar(self._tar_name, self.get_install_path(), 1)
-        self._system.execute("make", ["-f", "Makefile-libbz2_so"], self.get_install_path())
-        self._system.execute("make", ["install", "PREFIX=" + self.get_install_path()], 
-                             self.get_install_path())
+        self._system.make(args=["-f", "Makefile-libbz2_so"], cwd=self.get_install_path())
+        self._system.make(args=["install", "PREFIX=" + self.get_install_path()], 
+                          cwd=self.get_install_path())
     def _update(self):
         """ Nothing to do here..."""
         pass

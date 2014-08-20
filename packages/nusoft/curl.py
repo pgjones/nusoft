@@ -22,7 +22,8 @@ class Curl(conditional_package.ConditionalPackage):
         :type system: :class:`nusoft.system.System` instance
         :param repository: local name of the repository the package is from
         """
-        super(Curl, self).__init__(self._version, system, repository, libraries=["curl"], headers=["curl/curl.h"])
+        super(Curl, self).__init__(self._version, system, repository, libraries=["curl"], 
+                                   headers=["curl/curl.h"])
         self._tar_name = self._version + ".tar.gz"
         self._source_path = os.path.join(self._system.get_install_path(), "%s-source" % self._name)
     def get_dependencies(self):
@@ -38,10 +39,10 @@ class Curl(conditional_package.ConditionalPackage):
     def _install(self):
         """ Untar the tar file to the install path."""
         self._system.untar(self._tar_name, self._source_path(), 1)
-        self._system.configure(args=["--prefix=%s" % self.get_install_path()],
+        self._system.configure(args=["--prefix=%s" % self.get_install_path()], 
                                cwd=self._source_path)
-        self._system.execute("make", [], cwd=self._source_path)
-        self._system.execute("make", ["install"], cwd=self._source_path)
+        self._system.make(cwd=self._source_path)
+        self._system.make(args=["install"], cwd=self._source_path)
     def _update(self):
         """ Nothing to do here..."""
         pass

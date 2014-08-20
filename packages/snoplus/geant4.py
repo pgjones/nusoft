@@ -45,8 +45,8 @@ class Geant4(local_package.LocalPackage):
                       "-DGEANT4_INSTALL_DATA=ON", self._source_path]
         cmake = os.path.join(self._dependencies["cmake-2.8.12.1"].get_install_path(), "bin/cmake")
         self._system.configure(cmake, cmake_opts, self.get_install_path())
-        self._system.execute("make", [], self.get_install_path())
-        self._system.execute("make", ['install'], self.get_install_path())
+        self._system.make(cwd=self.get_install_path())
+        self._system.make(args=['install'], cwd=self.get_install_path())
     def _update(self):
         """ Nothing to do here..."""
         pass

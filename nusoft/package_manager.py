@@ -147,7 +147,10 @@ class PackageManager(object):
             return package
         dependencies = self._install_package_dependencies(package)
         package.set_dependencies(dependencies)
-        package.install()
+        try:
+            package.install()
+        except Exception as e:
+            raise Exception("Failed to install " + package.get_name() + " see log for details")
         package.check_state()
         return package        
     def _update_package(self, package):

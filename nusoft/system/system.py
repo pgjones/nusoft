@@ -158,6 +158,24 @@ class System(object):
         :type env: dictionary of keys with values, all strings
         :return: standard output from command
         :rtype: string
+        :raises Exception: if the configure fails
+        """
+        pass
+    def make(self, command='make', args=None, cwd=None, env=None):
+        """ Run a make *command* in the *cwd* directory with arguments, *args* and optional *env*,
+        environment.
+
+        :param command: optional command to execute
+        :type command: string
+        :param args: optional list of arguments
+        :type args: list of strings
+        :param cwd: optional path to execute the command in
+        :type cwd: string
+        :param env: optional dictionary of environment
+        :type env: dictionary of keys with values, all strings
+        :return: standard output from command
+        :rtype: string
+        :raises Exception: if the make fails
         """
         pass
     def execute(self, command, args=None, cwd=None, env=None):
