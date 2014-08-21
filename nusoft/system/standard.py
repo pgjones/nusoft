@@ -13,6 +13,7 @@ import tarfile
 import urllib2
 import base64
 import subprocess
+from contextlib import closing
 import logging
 logger = logging.getLogger(__name__)
 
@@ -150,14 +151,14 @@ class Standard(system.System):
         if self.exists(target_path):
             self.remove(target_path)
         if strip_depth == 0: # Untar directly into target
-            with tarfile.open(file_path) as tar_file:
+            with closing(tarfile.open(file_path)) as tar_file:
                 tar_file.extractall(target_path)
         else: # Must extract to temp target then copy strip directory to real target
             temp_path = self._file_path("tartemp")
             if self.exists(temp_path): # Delete it
                 self.remove(temp_path)
             os.makedirs(temp_path)
-            with tarfile.open(file_path) as tar_file:
+            with closing(tarfile.open(file_path)) as tar_file:
                 tar_file.extractall(temp_path)
             copy_path = temp_path
             for depth in range(0, strip_depth):
