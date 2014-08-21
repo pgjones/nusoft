@@ -24,7 +24,7 @@ class WCSimDev(local_package.LocalPackage):
         :param repository: local name of the repository the package is from
         """
         super(WCSimDev, self).__init__("wcsim-dev", system, repository)
-        self._root = "root_v5.34.18"
+        self._root = "root_v5.34.10"
         self._geant4 = "geant4.9.4.p04"
     def get_dependencies(self):
         """ Return a list of dependency names
