@@ -99,8 +99,8 @@ class Standard(system.System):
             with open(target_path, 'wb') as local_file:
                 local_file.write(remote_file.read())
             remote_file.close()
-        except urllib2.URLError, e: # No internet connection
-            logger.exception("Tried to download %s to %s" % (url, target_path))
+        except urllib2.URLError as error: # No internet connection
+            logger.exception("Tried to download %s to %s" % (url, target_path), exc_info=True)
             self.remove(target_path)
             raise
         logger.debug("Downloaded %s to %s" % (url, target_path))
@@ -247,8 +247,8 @@ class Standard(system.System):
         try:
             process = subprocess.Popen(args=shell_command, env=local_env, cwd=cwd,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        except exceptions.OSError,e:
-            logger.exception("Tried executing %s and failed" % ' '.join(shell_command))
+        except exceptions.OSError as e:
+            logger.exception("Tried executing %s and failed" % ' '.join(shell_command), exc_info=True)
         output, error = process.communicate()
         logger.debug("Executing %s, gives \n{\noutput : %s\nerror: %s\n}\n" % (' '.join(shell_command), output, error))
         # After process has finished

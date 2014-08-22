@@ -48,7 +48,7 @@ class PackageManager(object):
         try:
             return self._packages[package_name]
         except KeyError:
-            logger.warn("Package %s does not exist" % package_name)
+            logger.exception("Package %s does not exist" % package_name, exc_info=True)
             raise
 ####################################################################################################
     # Functions that act on single packages
@@ -150,6 +150,7 @@ class PackageManager(object):
         try:
             package.install()
         except Exception as e:
+            logger.exception("Installation fail.", exc_info=True)
             raise Exception("Failed to install " + package.get_name() + " see log for details")
         package.check_state()
         return package        

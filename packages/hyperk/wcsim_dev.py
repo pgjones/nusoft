@@ -50,7 +50,7 @@ class WCSimDev(local_package.LocalPackage):
         env_file = nusoft.envfile.EnvFile("#wcsim environment\n")
         env_file.add_source(os.path.join(self._dependencies[self._root].get_install_path(), "bin"), "thisroot")
         env_file.add_source(os.path.join(self._dependencies[self._geant4].get_install_path(), 
-                                         "install/share/geant4-9.4.4/config"), 
+                                         "share/geant4-9.4.4/config"), 
                             "geant4-9.4.4")
         env_file.write(self._system.get_install_path(), "env_wcsim-dev")
     def _update(self):
