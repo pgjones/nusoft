@@ -10,10 +10,13 @@ import os
 import logging
 import nusoft.nusoft
 import argparse
+import datetime
+now = datetime.datetime.now()
 
-if os.path.exists("test.log"):
-    os.remove("test.log")
-logging.basicConfig(filename="test.log", level=logging.DEBUG)
+log_file_name = "nusoft" +  now.strftime('%Y-%m-%d-%H:%M') + ".log"
+if os.path.exists(log_file_name):
+    os.remove(log_file_name)
+logging.basicConfig(filename=log_file_name, level=logging.DEBUG)
 
 nu = nusoft.nusoft.Nusoft(os.getcwd())
 parser = argparse.ArgumentParser(prog='nusoft', description='Package manager for particle physics')
