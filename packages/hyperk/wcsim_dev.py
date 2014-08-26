@@ -26,13 +26,15 @@ class WCSimDev(local_package.LocalPackage):
         super(WCSimDev, self).__init__("wcsim-dev", system, repository)
         self._root = "root_v5.34.10"
         self._geant4 = "geant4.9.4.p04"
+        self._clhep = "clhep-2.1.0.1"
     def get_dependencies(self):
         """ Return a list of dependency names
 
         :returns: list of dependency package names
         :rtype: list
         """
-        return ["make", "g++", "gcc", "ld", "python", "python-dev", self._root, self._geant4]
+        return ["make", "g++", "gcc", "ld", "python", "python-dev", self._root, self._geant4, 
+                self._clhep]
     def _download(self):
         """ Git clone the wcsim repository file."""
         self._system.git_clone("ssh://git@poset.ph.qmul.ac.uk/hk-WCSim", self.get_install_path())
@@ -52,6 +54,7 @@ class WCSimDev(local_package.LocalPackage):
         env_file.add_source(os.path.join(self._dependencies[self._geant4].get_install_path(), 
                                          "share/geant4-9.4.4/config"), 
                             "geant4-9.4.4")
+        env_file.add_environment("CLHEP_BASE_DIR", self._dependencies[self._clhep].get_install_path())
         env_file.write(self._system.get_install_path(), "env_wcsim-dev")
     def _update(self):
         """ Update the git repository."""
