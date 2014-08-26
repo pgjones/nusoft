@@ -55,6 +55,7 @@ class WCSimDev(local_package.LocalPackage):
                                          "share/geant4-9.4.4/config"), 
                             "geant4-9.4.4")
         env_file.add_environment("CLHEP_BASE_DIR", self._dependencies[self._clhep].get_install_path())
+        env_file.add_environment("G4WORKDIR", os.path.join(self.get_install_path(), "exe"))
         env_file.write(self._system.get_install_path(), "env_wcsim-dev")
     def _update(self):
         """ Update the git repository."""
