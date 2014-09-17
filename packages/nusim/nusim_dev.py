@@ -25,7 +25,7 @@ class NuSimDev(local_package.LocalPackage):
         """
         super(NuSimDev, self).__init__("nusim-dev", system, repository)
         self._root = "root_v5.34.18"
-        self._geant4 = "geant4.10.00.p02"
+        self._geant4 = "nugeant4.10.00.p02"
     def get_dependencies(self):
         """ Return a list of dependency names
 

@@ -28,7 +28,7 @@ class RatDev(local_package.LocalPackage):
         """
         super(RatDev, self).__init__("rat-dev", system, repository)
         self._root = "root_v5.34.18"
-        self._geant4 = "geant4.9.6.p02"
+        self._geant4 = "geant4.10.00.p02"
         self._scons = "scons-2.1.0"
         self._curl = "curl-7.26.0"
         self._bzip = "bzip2-1.0.6"

@@ -75,5 +75,5 @@ class Geant4(local_package.LocalPackage):
             self._system.is_library(os.path.join(self.get_install_path(), "lib64/libG4event"))
     
 # The versions of geant4 that can be installed
-versions = [type('Geant410002', (Geant4, object), {"_version" : "geant4.10.00.p02"})]
+versions = [type('Geant410002', (Geant4, object), {"_version" : "nugeant4.10.00.p02"})]
 
