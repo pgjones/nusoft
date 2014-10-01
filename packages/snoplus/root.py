@@ -54,7 +54,8 @@ class Root(local_package.LocalPackage):
         return self._system.exists(os.path.join(self.get_install_path(), "bin/root"))
     
 # The versions of root that can be installed
-versions = [type('root_v5.34.18', (Root, object), {"_version" : "root_v5.34.18"}),
+versions = [type('root_v5.34.21', (Root, object), {"_version" : "root_v5.34.21"}),
+            type('root_v5.34.18', (Root, object), {"_version" : "root_v5.34.18"}),
             type('root_v5.34.08', (Root, object), {"_version" : "root_v5.34.08"}),
             type('root_v5.34.02', (Root, object), {"_version" : "root_v5.34.02"}),
             type('root_v5.32.04', (Root, object), {"_version" : "root_v5.32.04"}),
