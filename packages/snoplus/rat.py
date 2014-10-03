@@ -86,7 +86,14 @@ class RatRelease(local_package.LocalPackage):
             and self._system.is_library(os.path.join(self.get_install_path(), "lib/libRATEvent_%s" % sys)) 
     
 # The versions of RatRelease that can be installed
-versions = [type('Rat460', (RatRelease, object), {"_version" : "rat-4.6.0", 
+versions = [type('Rat500', (RatRelease, object), {"_version" : "rat-5.0.0", 
+                                                  "_tar_name" : "5.0.0.tar.gz",
+                                                  "_root" : "root_v5.34.21",
+                                                  "_geant4" : "geant4.10.00.p02",
+                                                  "_scons" : "scons-2.1.0",
+                                                  "_curl" : "curl-7.26.0",
+                                                  "_bzip" : "bzip2-1.0.6"}),
+            type('Rat460', (RatRelease, object), {"_version" : "rat-4.6.0", 
                                                   "_tar_name" : "4.6.0.tar.gz",
                                                   "_root" : "root_v5.34.18",
                                                   "_geant4" : "geant4.9.6.p02",
